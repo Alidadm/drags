@@ -23,7 +23,8 @@ export const GridExample = () => {
         revert: 'invalid', 
         scroll: false, 
         appendTo: 'body', 
-        helper: 'clone'
+        helper: 'clone',
+        containment: 'document'
       },
       removable: false
     };
@@ -32,20 +33,35 @@ export const GridExample = () => {
     gridInstanceRef.current = grid;
 
     grid.on('dropped', (event: Event, previousWidget: any, newWidget: any) => {
-      console.log('Widget dropped:', { previousWidget, newWidget });
+      console.log('Widget dropped event triggered:', { event, previousWidget, newWidget });
       
       if (newWidget && newWidget.el) {
-        // Get the widget data from the dragged element
-        const draggedElement = previousWidget?.helper?.[0] || event.target as HTMLElement;
-        const widgetTitle = draggedElement.querySelector('.widget-title')?.textContent || 'Widget';
-        const widgetIcon = draggedElement.querySelector('.widget-icon')?.innerHTML || '';
-        
-        // Remove the temporary element
+        // Remove the temporary element first
         newWidget.el.remove();
+        
+        // Try to get widget data from different sources
+        let widgetTitle = 'Default Widget';
+        let widgetIcon = '<div class="w-4 h-4 bg-cyan-500 rounded"></div>';
+        
+        // Check if we have the original dragged element
+        if (event && (event as any).target) {
+          const draggedElement = (event as any).target;
+          const titleElement = draggedElement.querySelector?.('.widget-title');
+          const iconElement = draggedElement.querySelector?.('.widget-icon');
+          
+          if (titleElement) {
+            widgetTitle = titleElement.textContent || widgetTitle;
+          }
+          if (iconElement) {
+            widgetIcon = iconElement.innerHTML || widgetIcon;
+          }
+        }
+        
+        console.log('Creating widget with:', { widgetTitle, widgetIcon });
         
         // Create properly formatted widget content
         const widgetHtml = `
-          <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-all h-full flex flex-col">
+          <div class="grid-stack-item-content bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-all h-full flex flex-col">
             <div class="flex items-center gap-2 mb-2">
               <div class="p-1.5 bg-cyan-100 rounded-md">
                 ${widgetIcon}
@@ -62,8 +78,8 @@ export const GridExample = () => {
         grid.addWidget({
           x: newWidget.x || 0,
           y: newWidget.y || 0,
-          w: 1,
-          h: 1,
+          w: 3,
+          h: 2,
           content: widgetHtml
         });
       }

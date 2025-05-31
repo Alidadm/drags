@@ -33,6 +33,11 @@ export const RightSidebar = () => {
                   console.log('Starting drag for widget:', widget.title);
                   e.dataTransfer.effectAllowed = 'copy';
                   e.dataTransfer.setData('text/plain', widget.title);
+                  e.dataTransfer.setData('widget-title', widget.title);
+                  e.dataTransfer.setData('widget-icon', `<${Icon.name} size={16} class="text-cyan-600" />`);
+                }}
+                onDragEnd={(e) => {
+                  console.log('Drag ended for widget:', widget.title);
                 }}
               >
                 <div className="bg-gradient-to-r from-white to-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all hover:border-cyan-300 group select-none">
