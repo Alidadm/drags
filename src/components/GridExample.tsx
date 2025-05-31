@@ -19,6 +19,9 @@ export const GridExample = () => {
       minRow: 2,
       acceptWidgets: '.grid-stack-item',
       margin: 10,
+      resizable: {
+        handles: 'e, se, s, sw, w'
+      },
       dragIn: '.sidebar-item',
       dragInOptions: { 
         revert: 'invalid', 
