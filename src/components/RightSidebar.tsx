@@ -26,7 +26,7 @@ export const RightSidebar = () => {
                 data-gs-width="4"
                 data-gs-height="2"
               >
-                <div className="flex items-center gap-2">
+                <div className="widget-content flex items-center gap-2">
                   <Icon size={16} className="text-cyan-600" />
                   <span className="font-medium text-gray-800">{widget.title}</span>
                 </div>
