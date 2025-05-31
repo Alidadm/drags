@@ -1,3 +1,4 @@
+
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
 import { useLayoutEffect, useRef } from 'react';
@@ -86,8 +87,17 @@ export const GridExample = () => {
     });
 
     return () => {
-      if (gridInstanceRef.current) {
-        gridInstanceRef.current.destroy();
+      try {
+        if (gridInstanceRef.current && gridRef.current) {
+          // Check if the grid container still exists in the DOM
+          if (document.contains(gridRef.current)) {
+            gridInstanceRef.current.destroy();
+          }
+          gridInstanceRef.current = null;
+        }
+      } catch (error) {
+        console.warn('Error destroying GridStack:', error);
+        // Silently handle the error since the DOM cleanup might have already occurred
         gridInstanceRef.current = null;
       }
     };
