@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Sidebar } from '../components/Sidebar';
 import { RightSidebar } from '../components/RightSidebar';
+import { TopNavbar } from '../components/TopNavbar';
 import { DashboardContent } from '../components/DashboardContent';
 import { AnalyticsContent } from '../components/AnalyticsContent';
 import { ProjectsContent } from '../components/ProjectsContent';
@@ -30,21 +31,24 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex">
-      <Sidebar
-        activeSection={activeSection}
-        setActiveSection={setActiveSection}
-        collapsed={sidebarCollapsed}
-        setCollapsed={setSidebarCollapsed}
-      />
-      <main className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
-        <div className="flex">
-          <div className="flex-1 p-8">
-            {renderContent()}
+    <div className="min-h-screen bg-white flex flex-col">
+      <TopNavbar />
+      <div className="flex flex-1">
+        <Sidebar
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
+          collapsed={sidebarCollapsed}
+          setCollapsed={setSidebarCollapsed}
+        />
+        <main className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
+          <div className="flex">
+            <div className="flex-1 p-8">
+              {renderContent()}
+            </div>
+            <RightSidebar />
           </div>
-          <RightSidebar />
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 };
