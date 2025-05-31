@@ -7,9 +7,10 @@ import { Activity, Terminal, Layers, Clock } from 'lucide-react';
 export const GridExample = () => {
   const gridRef = useRef<HTMLDivElement>(null);
   const gridInstanceRef = useRef<GridStack | null>(null);
+  const cleanupInProgressRef = useRef(false);
 
   useLayoutEffect(() => {
-    if (!gridRef.current) return;
+    if (!gridRef.current || cleanupInProgressRef.current) return;
 
     const options = {
       float: true,
@@ -87,18 +88,33 @@ export const GridExample = () => {
     });
 
     return () => {
+      cleanupInProgressRef.current = true;
+      
       try {
-        if (gridInstanceRef.current && gridRef.current) {
-          // Check if the grid container still exists in the DOM
-          if (document.contains(gridRef.current)) {
-            gridInstanceRef.current.destroy();
-          }
+        if (gridInstanceRef.current && gridRef.current && document.contains(gridRef.current)) {
+          // Remove all widgets first to prevent DOM conflicts
+          gridInstanceRef.current.removeAll(false);
+          
+          // Small delay to ensure DOM operations complete
+          setTimeout(() => {
+            try {
+              if (gridInstanceRef.current && !gridInstanceRef.current.opts.disableOneColumnMode) {
+                gridInstanceRef.current.destroy(false);
+              }
+            } catch (destroyError) {
+              console.warn('GridStack destroy error (safely ignored):', destroyError);
+            }
+            gridInstanceRef.current = null;
+            cleanupInProgressRef.current = false;
+          }, 0);
+        } else {
           gridInstanceRef.current = null;
+          cleanupInProgressRef.current = false;
         }
       } catch (error) {
-        console.warn('Error destroying GridStack:', error);
-        // Silently handle the error since the DOM cleanup might have already occurred
+        console.warn('GridStack cleanup error (safely ignored):', error);
         gridInstanceRef.current = null;
+        cleanupInProgressRef.current = false;
       }
     };
   }, []);
