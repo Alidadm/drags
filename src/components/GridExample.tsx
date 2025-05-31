@@ -29,6 +29,45 @@ export const GridExample = () => {
     const grid = GridStack.init(options, gridRef.current);
     gridInstanceRef.current = grid;
 
+    // Load initial widgets programmatically
+    const initialWidgets = [
+      {
+        x: 0,
+        y: 0,
+        w: 4,
+        h: 2,
+        content: `
+          <div class="grid-stack-item-content bg-white p-4 rounded-lg shadow-md cursor-move">
+            <div class="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-cyan-600">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+              <span class="font-medium text-gray-800">Build Stats</span>
+            </div>
+          </div>
+        `
+      },
+      {
+        x: 4,
+        y: 0,
+        w: 4,
+        h: 2,
+        content: `
+          <div class="grid-stack-item-content bg-white p-4 rounded-lg shadow-md cursor-move">
+            <div class="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-cyan-600">
+                <polyline points="4 17 10 11 4 5"></polyline>
+                <line x1="12" y1="19" x2="20" y2="19"></line>
+              </svg>
+              <span class="font-medium text-gray-800">Build Alerts</span>
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    grid.load(initialWidgets);
+
     grid.on('dropped', (_event: Event, _previousWidget: any, newWidget: any) => {
       const widgetContent = newWidget.el.querySelector('.widget-content')?.innerHTML || '';
       const widgetHtml = `
@@ -55,23 +94,6 @@ export const GridExample = () => {
   }, []);
 
   return (
-    <div ref={gridRef} className="grid-stack bg-gray-100 p-4 rounded-lg min-h-[600px]">
-      <div className="grid-stack-item" gs-x="0" gs-y="0" gs-w="4" gs-h="2">
-        <div className="grid-stack-item-content bg-white p-4 rounded-lg shadow-md cursor-move">
-          <div className="flex items-center gap-2">
-            <Activity className="h-5 w-5 text-cyan-600" />
-            <span className="font-medium text-gray-800">Build Stats</span>
-          </div>
-        </div>
-      </div>
-      <div className="grid-stack-item" gs-x="4" gs-y="0" gs-w="4" gs-h="2">
-        <div className="grid-stack-item-content bg-white p-4 rounded-lg shadow-md cursor-move">
-          <div className="flex items-center gap-2">
-            <Terminal className="h-5 w-5 text-cyan-600" />
-            <span className="font-medium text-gray-800">Build Alerts</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div ref={gridRef} className="grid-stack bg-gray-100 p-4 rounded-lg min-h-[600px]" />
   );
 };
