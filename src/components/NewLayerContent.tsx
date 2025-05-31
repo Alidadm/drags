@@ -2,11 +2,6 @@
 export const NewLayerContent = () => {
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Component Builder</h1>
-        <p className="text-slate-400">Create and manage your application layers and components.</p>
-      </div>
-
       {/* Blank dashboard content */}
       <div className="bg-slate-800 rounded-xl p-12 shadow-xl border border-slate-700 text-center">
         <div className="space-y-4">
