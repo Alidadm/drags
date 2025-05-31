@@ -1,6 +1,7 @@
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
 import { useEffect } from 'react';
+import { Activity, Terminal } from 'lucide-react';
 
 export const GridExample = () => {
   useEffect(() => {
