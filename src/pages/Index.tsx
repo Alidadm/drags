@@ -4,6 +4,7 @@ import { Sidebar } from '../components/Sidebar';
 import { DashboardContent } from '../components/DashboardContent';
 import { AnalyticsContent } from '../components/AnalyticsContent';
 import { ProjectsContent } from '../components/ProjectsContent';
+import { NewLayerContent } from '../components/NewLayerContent';
 import { SettingsContent } from '../components/SettingsContent';
 
 const Index = () => {
@@ -18,6 +19,8 @@ const Index = () => {
         return <AnalyticsContent />;
       case 'projects':
         return <ProjectsContent />;
+      case 'new-layer':
+        return <NewLayerContent />;
       case 'settings':
         return <SettingsContent />;
       default:

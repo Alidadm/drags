@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { BarChart3, Home, FolderOpen, Settings, Menu, ChevronLeft } from 'lucide-react';
+import { BarChart3, Home, FolderOpen, Settings, Menu, ChevronLeft, Layers } from 'lucide-react';
 
 interface SidebarProps {
   activeSection: string;
@@ -27,6 +27,12 @@ const navigationItems = [
     label: 'Projects',
     icon: FolderOpen,
     description: 'Project management'
+  },
+  {
+    id: 'new-layer',
+    label: 'New Layer',
+    icon: Layers,
+    description: 'Layer management'
   },
   {
     id: 'settings',
