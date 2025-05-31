@@ -1,13 +1,13 @@
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import { Activity, Terminal } from 'lucide-react';
 
 export const GridExample = () => {
   const gridRef = useRef<HTMLDivElement>(null);
   const gridInstanceRef = useRef<GridStack | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!gridRef.current) return;
 
     const grid = GridStack.init({
