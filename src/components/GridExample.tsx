@@ -98,7 +98,7 @@ export const GridExample = () => {
           // Small delay to ensure DOM operations complete
           setTimeout(() => {
             try {
-              if (gridInstanceRef.current && !gridInstanceRef.current.opts.disableOneColumnMode) {
+              if (gridInstanceRef.current) {
                 gridInstanceRef.current.destroy(false);
               }
             } catch (destroyError) {
