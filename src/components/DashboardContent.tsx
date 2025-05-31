@@ -1,4 +1,3 @@
-
 import { Code, GitBranch, Zap, Cpu } from 'lucide-react';
 
 export const DashboardContent = () => {
@@ -37,7 +36,6 @@ export const DashboardContent = () => {
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-white mb-2">Builder Dashboard</h1>
-        <p className="text-slate-400">Welcome to your development workspace. Here's your build status and project overview.</p>
       </div>
 
       {/* Stats Grid */}
