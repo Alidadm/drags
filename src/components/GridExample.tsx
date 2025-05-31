@@ -1,11 +1,16 @@
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
-import { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { Activity, Terminal } from 'lucide-react';
 
 export const GridExample = () => {
   const gridRef = useRef<HTMLDivElement>(null);
   const gridInstanceRef = useRef<GridStack | null>(null);
+  const [droppedWidgets, setDroppedWidgets] = useState<Array<{
+    x: number;
+    y: number;
+    content: string;
+  }>>([]);
 
   useLayoutEffect(() => {
     if (!gridRef.current) return;
@@ -21,14 +26,16 @@ export const GridExample = () => {
 
     gridInstanceRef.current = grid;
 
-    // Add drop functionality
+    // Add drop functionality using React state
     grid.on('dropped', function(event, previousWidget, newWidget) {
-      const gridItem = event.target;
-      const content = gridItem.querySelector('.grid-stack-item-content');
-      if (content) {
-        content.innerHTML = newWidget.el.innerHTML;
-        content.className = 'grid-stack-item-content bg-white p-4 rounded-lg shadow-md';
-      }
+      setDroppedWidgets(prev => [
+        ...prev,
+        {
+          x: newWidget.x || 0,
+          y: newWidget.y || 0,
+          content: newWidget.el.innerHTML
+        }
+      ]);
     });
 
     return () => {
@@ -57,6 +64,20 @@ export const GridExample = () => {
           </div>
         </div>
       </div>
+      {droppedWidgets.map((widget, index) => (
+        <div
+          key={index}
+          className="grid-stack-item"
+          data-gs-x={widget.x}
+          data-gs-y={widget.y}
+          data-gs-width="4"
+          data-gs-height="2"
+        >
+          <div className="grid-stack-item-content bg-white p-4 rounded-lg shadow-md"
+               dangerouslySetInnerHTML={{ __html: widget.content }}
+          />
+        </div>
+      ))}
     </div>
   );
 };
