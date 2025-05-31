@@ -15,36 +15,44 @@ export const GridExample = () => {
       column: 12,
       cellHeight: 150,
       minRow: 2,
-      acceptWidgets: true,
+      acceptWidgets: '.sidebar-item',
       margin: 10,
       draggable: {
+        handle: '.grid-stack-item-content',
         scroll: false,
         appendTo: 'body'
       },
-      dragIn: '.sidebar-item',
-      dragInOptions: { 
-        helper: 'clone',
-        appendTo: 'body',
-        containment: true,
-        revert: 'invalid'
-      }
+      dragMode: 'clone',
+      removable: true
     };
 
     const grid = GridStack.init(options, gridRef.current);
     gridInstanceRef.current = grid;
 
-    grid.on('dropped', function(event: Event, previousWidget: any, newWidget: any) {
-      const el = newWidget.el as HTMLElement;
-      const title = el.querySelector('.widget-title')?.textContent || 'Widget';
-      const icon = el.querySelector('.widget-icon')?.innerHTML || '';
-      
-      // Remove the temporary element
-      el.remove();
-      
-      // Add the actual widget with proper styling
+    const onDragStart = (event: DragEvent) => {
+      if (!event.dataTransfer) return;
+      event.dataTransfer.setData('text/plain', '');
+      event.dataTransfer.effectAllowed = 'move';
+    };
+
+    const onDrop = (event: DragEvent) => {
+      const gridElement = event.target as HTMLElement;
+      if (!gridElement || !event.dataTransfer) return;
+
+      const widgetElement = document.querySelector('.sidebar-item.dragging');
+      if (!widgetElement) return;
+
+      const rect = gridElement.getBoundingClientRect();
+      const x = Math.floor((event.clientX - rect.left) / (rect.width / 12));
+      const y = Math.floor((event.clientY - rect.top) / 150);
+
+      const title = widgetElement.querySelector('.widget-title')?.textContent || 'Widget';
+      const iconElement = widgetElement.querySelector('.widget-icon');
+      const icon = iconElement?.innerHTML || '';
+
       grid.addWidget({
-        x: newWidget.x,
-        y: newWidget.y,
+        x,
+        y,
         w: 3,
         h: 2,
         content: `
@@ -61,13 +69,24 @@ export const GridExample = () => {
           </div>
         `
       });
-    });
+
+      widgetElement.classList.remove('dragging');
+      event.preventDefault();
+    };
+
+    const gridElement = gridRef.current;
+    gridElement.addEventListener('dragover', (e) => e.preventDefault());
+    gridElement.addEventListener('drop', onDrop);
 
     return () => {
       cleanupInProgressRef.current = true;
       if (gridInstanceRef.current) {
         gridInstanceRef.current.destroy();
         gridInstanceRef.current = null;
+      }
+      if (gridElement) {
+        gridElement.removeEventListener('dragover', (e) => e.preventDefault());
+        gridElement.removeEventListener('drop', onDrop);
       }
       cleanupInProgressRef.current = false;
     };

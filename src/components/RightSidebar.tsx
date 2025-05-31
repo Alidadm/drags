@@ -10,6 +10,18 @@ export const RightSidebar = () => {
     { id: 'system-status', title: 'System Status', icon: Cpu, description: 'Monitor system health' }
   ];
 
+  const handleDragStart = (e: React.DragEvent, widget: any) => {
+    const element = e.currentTarget as HTMLElement;
+    element.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', widget.id);
+  };
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    const element = e.currentTarget as HTMLElement;
+    element.classList.remove('dragging');
+  };
+
   return (
     <div className="w-80 bg-gray-100 border-l border-gray-300 p-6 space-y-6 overflow-y-auto">
       <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
@@ -27,6 +39,8 @@ export const RightSidebar = () => {
                 key={widget.id}
                 className="sidebar-item cursor-move"
                 draggable="true"
+                onDragStart={(e) => handleDragStart(e, widget)}
+                onDragEnd={handleDragEnd}
                 data-gs-id={widget.id}
               >
                 <div className="bg-gradient-to-r from-white to-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all hover:border-cyan-300 group select-none">
