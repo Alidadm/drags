@@ -1,5 +1,4 @@
-
-import { Terminal, Layers, Users, Activity, TrendingUp, Clock, BarChart3, Cpu } from 'lucide-react';
+import { Terminal, Layers, Activity, TrendingUp, Clock, BarChart3, Cpu } from 'lucide-react';
 
 export const RightSidebar = () => {
   const widgets = [
@@ -13,7 +12,6 @@ export const RightSidebar = () => {
 
   return (
     <div className="w-80 bg-gray-100 border-l border-gray-300 p-6 space-y-6 overflow-y-auto">
-      {/* Widget Library */}
       <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <Layers size={20} className="text-cyan-600" />
@@ -27,21 +25,9 @@ export const RightSidebar = () => {
             return (
               <div
                 key={widget.id}
-                className="sidebar-item cursor-grab active:cursor-grabbing"
+                className="sidebar-item cursor-move"
                 draggable="true"
-                onDragStart={(e) => {
-                  console.log('Starting drag for widget:', widget.title);
-                  e.dataTransfer.effectAllowed = 'copy';
-                  e.dataTransfer.setData('text/plain', widget.title);
-                  e.dataTransfer.setData('application/json', JSON.stringify({
-                    title: widget.title,
-                    icon: widget.icon.name,
-                    description: widget.description
-                  }));
-                }}
-                onDragEnd={(e) => {
-                  console.log('Drag ended for widget:', widget.title);
-                }}
+                data-gs-id={widget.id}
               >
                 <div className="bg-gradient-to-r from-white to-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all hover:border-cyan-300 group select-none">
                   <div className="flex items-center gap-3 mb-2">
@@ -61,26 +47,6 @@ export const RightSidebar = () => {
               </div>
             );
           })}
-        </div>
-      </div>
-
-      {/* Quick Stats */}
-      <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <TrendingUp size={20} className="text-green-600" />
-          Quick Stats
-        </h3>
-        <div className="space-y-3">
-          {[
-            { label: "Active Builds", value: "3", color: "text-blue-600" },
-            { label: "Queue", value: "0", color: "text-green-600" },
-            { label: "Failed", value: "1", color: "text-red-600" }
-          ].map((stat, index) => (
-            <div key={index} className="flex items-center justify-between">
-              <span className="text-sm text-gray-700">{stat.label}</span>
-              <span className={`font-semibold ${stat.color}`}>{stat.value}</span>
-            </div>
-          ))}
         </div>
       </div>
     </div>
