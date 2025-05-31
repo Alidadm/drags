@@ -16,7 +16,7 @@ export const GridExample = () => {
       column: 12,
       cellHeight: 150,
       minRow: 2,
-      acceptWidgets: true,
+      acceptWidgets: '.sidebar-item',
       margin: 10,
       dragIn: '.sidebar-item',
       dragInOptions: { 
@@ -24,7 +24,8 @@ export const GridExample = () => {
         scroll: false, 
         appendTo: 'body', 
         helper: 'clone',
-        containment: 'document'
+        containment: 'document',
+        zIndex: 1000
       },
       removable: false
     };
@@ -33,33 +34,33 @@ export const GridExample = () => {
     gridInstanceRef.current = grid;
 
     grid.on('dropped', (event: Event, previousWidget: any, newWidget: any) => {
-      console.log('Widget dropped event triggered:', { event, previousWidget, newWidget });
+      console.log('Widget dropped - full event data:', { event, previousWidget, newWidget });
       
       if (newWidget && newWidget.el) {
-        // Remove the temporary element first
-        newWidget.el.remove();
+        const tempEl = newWidget.el;
         
-        // Try to get widget data from different sources
+        // Get widget data from the temporary element or data transfer
         let widgetTitle = 'Default Widget';
         let widgetIcon = '<div class="w-4 h-4 bg-cyan-500 rounded"></div>';
         
-        // Check if we have the original dragged element
-        if (event && (event as any).target) {
-          const draggedElement = (event as any).target;
-          const titleElement = draggedElement.querySelector?.('.widget-title');
-          const iconElement = draggedElement.querySelector?.('.widget-icon');
-          
-          if (titleElement) {
-            widgetTitle = titleElement.textContent || widgetTitle;
-          }
-          if (iconElement) {
-            widgetIcon = iconElement.innerHTML || widgetIcon;
-          }
+        // Try to extract data from the cloned element
+        const titleEl = tempEl.querySelector('.widget-title');
+        const iconEl = tempEl.querySelector('.widget-icon svg');
+        
+        if (titleEl) {
+          widgetTitle = titleEl.textContent || widgetTitle;
+          console.log('Found widget title:', widgetTitle);
         }
         
-        console.log('Creating widget with:', { widgetTitle, widgetIcon });
+        if (iconEl) {
+          widgetIcon = iconEl.outerHTML || widgetIcon;
+          console.log('Found widget icon:', widgetIcon);
+        }
         
-        // Create properly formatted widget content
+        // Remove the temporary element
+        tempEl.remove();
+        
+        // Create the actual widget content
         const widgetHtml = `
           <div class="grid-stack-item-content bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-all h-full flex flex-col">
             <div class="flex items-center gap-2 mb-2">
@@ -71,17 +72,22 @@ export const GridExample = () => {
             <div class="flex-1 flex items-center justify-center text-gray-500 text-xs">
               Widget content goes here
             </div>
+            <div class="text-xs text-gray-400 mt-2">
+              Click to configure
+            </div>
           </div>
         `;
         
-        // Add the properly formatted widget
-        grid.addWidget({
+        // Add the widget to the grid
+        const addedWidget = grid.addWidget({
           x: newWidget.x || 0,
           y: newWidget.y || 0,
           w: 3,
           h: 2,
           content: widgetHtml
         });
+        
+        console.log('Widget added successfully:', addedWidget);
       }
     });
 

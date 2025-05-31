@@ -33,8 +33,11 @@ export const RightSidebar = () => {
                   console.log('Starting drag for widget:', widget.title);
                   e.dataTransfer.effectAllowed = 'copy';
                   e.dataTransfer.setData('text/plain', widget.title);
-                  e.dataTransfer.setData('widget-title', widget.title);
-                  e.dataTransfer.setData('widget-icon', `<${Icon.name} size={16} class="text-cyan-600" />`);
+                  e.dataTransfer.setData('application/json', JSON.stringify({
+                    title: widget.title,
+                    icon: widget.icon.name,
+                    description: widget.description
+                  }));
                 }}
                 onDragEnd={(e) => {
                   console.log('Drag ended for widget:', widget.title);
