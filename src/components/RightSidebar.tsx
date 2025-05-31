@@ -1,32 +1,32 @@
 
-import { Calendar, Bell, Users, Activity, TrendingUp, Clock } from 'lucide-react';
+import { Terminal, Layers, Users, Activity, TrendingUp, Clock } from 'lucide-react';
 
 export const RightSidebar = () => {
   const notifications = [
-    { id: 1, message: "New user registered", time: "2 min ago", type: "user" },
-    { id: 2, message: "Payment received", time: "15 min ago", type: "payment" },
-    { id: 3, message: "System update completed", time: "1 hour ago", type: "system" }
+    { id: 1, message: "Build #1234 completed successfully", time: "2 min ago", type: "success" },
+    { id: 2, message: "New dependency update available", time: "15 min ago", type: "update" },
+    { id: 3, message: "Performance optimization suggested", time: "1 hour ago", type: "info" }
   ];
 
   const recentActivity = [
-    { action: "Project Alpha completed", user: "John Doe", time: "10 min ago" },
-    { action: "New layer created", user: "Jane Smith", time: "25 min ago" },
-    { action: "Dashboard updated", user: "Mike Johnson", time: "45 min ago" }
+    { action: "Frontend build deployed", user: "CI/CD Pipeline", time: "10 min ago" },
+    { action: "API layer updated", user: "Dev Team", time: "25 min ago" },
+    { action: "Database migration completed", user: "DevOps", time: "45 min ago" }
   ];
 
   const stats = [
-    { label: "Active Users", value: "1,234", change: "+12%", icon: Users, color: "text-blue-600" },
-    { label: "Revenue", value: "$45K", change: "+8%", icon: TrendingUp, color: "text-green-600" },
-    { label: "Tasks", value: "89", change: "-3%", icon: Activity, color: "text-purple-600" }
+    { label: "Build Time", value: "2.3m", change: "-15%", icon: Clock, color: "text-blue-400" },
+    { label: "Success Rate", value: "98.5%", change: "+2%", icon: TrendingUp, color: "text-green-400" },
+    { label: "Active Devs", value: "8", change: "+1", icon: Users, color: "text-purple-400" }
   ];
 
   return (
-    <div className="w-80 bg-white border-l border-slate-200 p-6 space-y-6 overflow-y-auto">
-      {/* Quick Stats Widget */}
-      <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-4">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-          <Activity size={20} />
-          Quick Stats
+    <div className="w-80 bg-slate-900 border-l border-slate-700 p-6 space-y-6 overflow-y-auto">
+      {/* Build Stats Widget */}
+      <div className="bg-gradient-to-br from-slate-800 to-slate-700 rounded-xl p-4 border border-slate-600">
+        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <Activity size={20} className="text-cyan-400" />
+          Build Stats
         </h3>
         <div className="space-y-3">
           {stats.map((stat, index) => {
@@ -35,11 +35,11 @@ export const RightSidebar = () => {
               <div key={index} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Icon size={16} className={stat.color} />
-                  <span className="text-sm text-slate-600">{stat.label}</span>
+                  <span className="text-sm text-slate-300">{stat.label}</span>
                 </div>
                 <div className="text-right">
-                  <div className="font-semibold text-slate-900">{stat.value}</div>
-                  <div className={`text-xs ${stat.change.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+                  <div className="font-semibold text-white">{stat.value}</div>
+                  <div className={`text-xs ${stat.change.startsWith('+') || stat.change.startsWith('-') && !stat.change.startsWith('--') ? 'text-green-400' : 'text-red-400'}`}>
                     {stat.change}
                   </div>
                 </div>
@@ -49,73 +49,73 @@ export const RightSidebar = () => {
         </div>
       </div>
 
-      {/* Notifications Widget */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-          <Bell size={20} />
-          Notifications
+      {/* Build Notifications Widget */}
+      <div className="bg-slate-800 rounded-xl border border-slate-700 p-4">
+        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <Terminal size={20} className="text-cyan-400" />
+          Build Alerts
         </h3>
         <div className="space-y-3">
           {notifications.map((notification) => (
-            <div key={notification.id} className="flex items-start gap-3 p-2 rounded-lg hover:bg-slate-50 transition-colors">
+            <div key={notification.id} className="flex items-start gap-3 p-2 rounded-lg hover:bg-slate-700/50 transition-colors">
               <div className={`w-2 h-2 rounded-full mt-2 ${
-                notification.type === 'user' ? 'bg-blue-500' :
-                notification.type === 'payment' ? 'bg-green-500' : 'bg-orange-500'
+                notification.type === 'success' ? 'bg-green-500' :
+                notification.type === 'update' ? 'bg-blue-500' : 'bg-orange-500'
               }`} />
               <div className="flex-1">
-                <p className="text-sm text-slate-900">{notification.message}</p>
-                <p className="text-xs text-slate-500">{notification.time}</p>
+                <p className="text-sm text-white">{notification.message}</p>
+                <p className="text-xs text-slate-400">{notification.time}</p>
               </div>
             </div>
           ))}
         </div>
-        <button className="w-full mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium">
-          View all notifications
+        <button className="w-full mt-3 text-sm text-cyan-400 hover:text-cyan-300 font-medium">
+          View all alerts
         </button>
       </div>
 
-      {/* Calendar Widget */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-          <Calendar size={20} />
-          Today's Schedule
+      {/* Active Tasks Widget */}
+      <div className="bg-slate-800 rounded-xl border border-slate-700 p-4">
+        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <Layers size={20} className="text-cyan-400" />
+          Active Tasks
         </h3>
         <div className="space-y-3">
-          <div className="flex items-center gap-3 p-2 rounded-lg bg-blue-50 border border-blue-100">
-            <Clock size={16} className="text-blue-600" />
+          <div className="flex items-center gap-3 p-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
+            <Clock size={16} className="text-blue-400" />
             <div>
-              <p className="text-sm font-medium text-slate-900">Team Meeting</p>
-              <p className="text-xs text-slate-500">10:00 AM - 11:00 AM</p>
+              <p className="text-sm font-medium text-white">Frontend Build</p>
+              <p className="text-xs text-slate-400">In progress - 2m 30s</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition-colors">
-            <Clock size={16} className="text-slate-400" />
+          <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-700/50 transition-colors">
+            <Clock size={16} className="text-slate-500" />
             <div>
-              <p className="text-sm font-medium text-slate-900">Project Review</p>
-              <p className="text-xs text-slate-500">2:00 PM - 3:00 PM</p>
+              <p className="text-sm font-medium text-white">API Tests</p>
+              <p className="text-xs text-slate-400">Queued</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition-colors">
-            <Clock size={16} className="text-slate-400" />
+          <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-700/50 transition-colors">
+            <Clock size={16} className="text-slate-500" />
             <div>
-              <p className="text-sm font-medium text-slate-900">Client Call</p>
-              <p className="text-xs text-slate-500">4:30 PM - 5:00 PM</p>
+              <p className="text-sm font-medium text-white">Deploy Staging</p>
+              <p className="text-xs text-slate-400">Scheduled - 15:30</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Recent Activity Widget */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-          <Activity size={20} />
+      <div className="bg-slate-800 rounded-xl border border-slate-700 p-4">
+        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <Activity size={20} className="text-cyan-400" />
           Recent Activity
         </h3>
         <div className="space-y-3">
           {recentActivity.map((activity, index) => (
-            <div key={index} className="p-2 rounded-lg hover:bg-slate-50 transition-colors">
-              <p className="text-sm font-medium text-slate-900">{activity.action}</p>
-              <p className="text-xs text-slate-500">by {activity.user} • {activity.time}</p>
+            <div key={index} className="p-2 rounded-lg hover:bg-slate-700/50 transition-colors">
+              <p className="text-sm font-medium text-white">{activity.action}</p>
+              <p className="text-xs text-slate-400">by {activity.user} • {activity.time}</p>
             </div>
           ))}
         </div>
