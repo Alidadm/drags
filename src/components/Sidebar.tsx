@@ -1,6 +1,5 @@
-
 import { useState } from 'react';
-import { Code, Home, FolderOpen, Settings, Menu, ChevronLeft, Layers } from 'lucide-react';
+import { Code, Home, FolderOpen, Settings, Menu, ChevronLeft } from 'lucide-react';
 
 interface SidebarProps {
   activeSection: string;
@@ -27,12 +26,6 @@ const navigationItems = [
     label: 'Projects',
     icon: FolderOpen,
     description: 'Active builds'
-  },
-  {
-    id: 'new-layer',
-    label: 'New Layer',
-    icon: Layers,
-    description: 'Component builder'
   },
   {
     id: 'settings',
@@ -105,4 +98,4 @@ export const Sidebar = ({ activeSection, setActiveSection, collapsed, setCollaps
       )}
     </div>
   );
-};
+}
