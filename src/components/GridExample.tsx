@@ -1,10 +1,15 @@
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Activity, Terminal } from 'lucide-react';
 
 export const GridExample = () => {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const gridInstanceRef = useRef<GridStack | null>(null);
+
   useEffect(() => {
+    if (!gridRef.current) return;
+
     const grid = GridStack.init({
       float: true,
       cellHeight: '70px',
@@ -12,7 +17,9 @@ export const GridExample = () => {
       acceptWidgets: true,
       dragIn: '.sidebar-item',
       dragInOptions: { revert: 'invalid', scroll: false, appendTo: 'body', helper: 'clone' }
-    });
+    }, gridRef.current);
+
+    gridInstanceRef.current = grid;
 
     // Add drop functionality
     grid.on('dropped', function(event, previousWidget, newWidget) {
@@ -25,12 +32,15 @@ export const GridExample = () => {
     });
 
     return () => {
-      grid.destroy();
+      if (gridInstanceRef.current) {
+        gridInstanceRef.current.destroy();
+        gridInstanceRef.current = null;
+      }
     };
   }, []);
 
   return (
-    <div className="grid-stack bg-gray-100 p-4 rounded-lg min-h-[600px]">
+    <div ref={gridRef} className="grid-stack bg-gray-100 p-4 rounded-lg min-h-[600px]">
       <div className="grid-stack-item" data-gs-x="0" data-gs-y="0" data-gs-width="4" data-gs-height="2">
         <div className="grid-stack-item-content bg-white p-4 rounded-lg shadow-md">
           <div className="flex items-center gap-2">
