@@ -23,30 +23,46 @@ export const GridExample = () => {
         revert: 'invalid', 
         scroll: false, 
         appendTo: 'body', 
-        helper: 'clone' 
-      }
+        helper: 'clone',
+        handle: '.widget-content'
+      },
+      removable: false
     };
 
     const grid = GridStack.init(options, gridRef.current);
     gridInstanceRef.current = grid;
 
-    // Start with a clean dashboard - no initial widgets
-
-    grid.on('dropped', (_event: Event, _previousWidget: any, newWidget: any) => {
-      const widgetContent = newWidget.el.querySelector('.widget-content')?.innerHTML || '';
+    grid.on('dropped', (event: Event, previousWidget: any, newWidget: any) => {
+      console.log('Widget dropped:', { previousWidget, newWidget });
+      
+      // Get the original widget content from the dragged element
+      const originalElement = event.target as HTMLElement;
+      const widgetContent = originalElement.querySelector('.widget-content')?.innerHTML || '';
+      
+      // Remove the temporary dropped element
+      if (newWidget && newWidget.el) {
+        newWidget.el.remove();
+      }
+      
+      // Create a new properly formatted widget
       const widgetHtml = `
-        <div class="grid-stack-item-content bg-white p-4 rounded-lg shadow-md cursor-move border border-gray-200 hover:shadow-lg transition-all">
+        <div class="grid-stack-item-content bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-all h-full">
           ${widgetContent}
         </div>
       `;
       
+      // Add the widget to the grid
       grid.addWidget({
-        x: newWidget.x || 0,
-        y: newWidget.y || 0,
+        x: newWidget?.x || 0,
+        y: newWidget?.y || 0,
         w: 1,
         h: 1,
         content: widgetHtml
       });
+    });
+
+    grid.on('dragstart', (event: Event, el: HTMLElement) => {
+      console.log('Drag started for:', el);
     });
 
     return () => {
@@ -86,7 +102,11 @@ export const GridExample = () => {
         <p className="text-gray-600">Drag widgets from the right sidebar to build your custom dashboard</p>
       </div>
       
-      <div ref={gridRef} className="grid-stack bg-gray-50 p-6 rounded-lg min-h-[600px] border-2 border-dashed border-gray-300" />
+      <div 
+        ref={gridRef} 
+        className="grid-stack bg-gray-50 p-6 rounded-lg min-h-[600px] border-2 border-dashed border-gray-300"
+        style={{ minHeight: '600px' }}
+      />
     </div>
   );
 };
