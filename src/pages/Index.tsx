@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { Sidebar } from '../components/Sidebar';
+import { RightSidebar } from '../components/RightSidebar';
 import { DashboardContent } from '../components/DashboardContent';
 import { AnalyticsContent } from '../components/AnalyticsContent';
 import { ProjectsContent } from '../components/ProjectsContent';
@@ -37,8 +38,11 @@ const Index = () => {
         setCollapsed={setSidebarCollapsed}
       />
       <main className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
-        <div className="p-8">
-          {renderContent()}
+        <div className="flex">
+          <div className="flex-1 p-8">
+            {renderContent()}
+          </div>
+          <RightSidebar />
         </div>
       </main>
     </div>
