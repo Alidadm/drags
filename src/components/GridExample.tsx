@@ -13,9 +13,9 @@ export const GridExample = () => {
     const options = {
       float: true,
       column: 12,
-      cellHeight: 'auto',
+      cellHeight: 80,
       minRow: 2,
-      acceptWidgets: true,
+      acceptWidgets: '.grid-stack-item',
       margin: 10,
       dragIn: '.sidebar-item',
       dragInOptions: { 
@@ -23,9 +23,6 @@ export const GridExample = () => {
         scroll: false, 
         appendTo: 'body', 
         helper: 'clone' 
-      },
-      draggable: {
-        handle: '.grid-stack-item-content'
       }
     };
 
@@ -35,20 +32,18 @@ export const GridExample = () => {
     grid.on('dropped', (_event: Event, _previousWidget: any, newWidget: any) => {
       const widgetContent = newWidget.el.querySelector('.widget-content')?.innerHTML || '';
       const widgetHtml = `
-        <div class="grid-stack-item-content bg-white p-4 rounded-lg shadow-md">
+        <div class="grid-stack-item-content bg-white p-4 rounded-lg shadow-md cursor-move">
           ${widgetContent}
         </div>
       `;
       
-      const node = {
-        x: newWidget.x,
-        y: newWidget.y,
+      grid.addWidget({
+        x: newWidget.x || 0,
+        y: newWidget.y || 0,
         w: 4,
         h: 2,
         content: widgetHtml
-      };
-
-      grid.addWidget(node);
+      });
     });
 
     return () => {
@@ -62,7 +57,7 @@ export const GridExample = () => {
   return (
     <div ref={gridRef} className="grid-stack bg-gray-100 p-4 rounded-lg min-h-[600px]">
       <div className="grid-stack-item" gs-x="0" gs-y="0" gs-w="4" gs-h="2">
-        <div className="grid-stack-item-content bg-white p-4 rounded-lg shadow-md">
+        <div className="grid-stack-item-content bg-white p-4 rounded-lg shadow-md cursor-move">
           <div className="flex items-center gap-2">
             <Activity className="h-5 w-5 text-cyan-600" />
             <span className="font-medium text-gray-800">Build Stats</span>
@@ -70,7 +65,7 @@ export const GridExample = () => {
         </div>
       </div>
       <div className="grid-stack-item" gs-x="4" gs-y="0" gs-w="4" gs-h="2">
-        <div className="grid-stack-item-content bg-white p-4 rounded-lg shadow-md">
+        <div className="grid-stack-item-content bg-white p-4 rounded-lg shadow-md cursor-move">
           <div className="flex items-center gap-2">
             <Terminal className="h-5 w-5 text-cyan-600" />
             <span className="font-medium text-gray-800">Build Alerts</span>

@@ -22,13 +22,15 @@ export const RightSidebar = () => {
             return (
               <div
                 key={widget.id}
-                className="sidebar-item cursor-move bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+                className="grid-stack-item sidebar-item"
                 data-gs-width="4"
                 data-gs-height="2"
               >
-                <div className="widget-content flex items-center gap-2">
-                  <Icon size={16} className="text-cyan-600" />
-                  <span className="font-medium text-gray-800">{widget.title}</span>
+                <div className="grid-stack-item-content bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-move">
+                  <div className="widget-content flex items-center gap-2">
+                    <Icon size={16} className="text-cyan-600" />
+                    <span className="font-medium text-gray-800">{widget.title}</span>
+                  </div>
                 </div>
               </div>
             );
