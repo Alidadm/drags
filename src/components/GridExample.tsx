@@ -15,7 +15,7 @@ export const GridExample = () => {
     const options = {
       float: true,
       column: 12,
-      cellHeight: 80,
+      cellHeight: 150,
       minRow: 2,
       acceptWidgets: '.grid-stack-item',
       margin: 10,
@@ -36,8 +36,8 @@ export const GridExample = () => {
       {
         x: 0,
         y: 0,
-        w: 4,
-        h: 2,
+        w: 1,
+        h: 1,
         content: `
           <div class="grid-stack-item-content bg-white p-4 rounded-lg shadow-md cursor-move">
             <div class="flex items-center gap-2">
@@ -50,10 +50,10 @@ export const GridExample = () => {
         `
       },
       {
-        x: 4,
+        x: 1,
         y: 0,
-        w: 4,
-        h: 2,
+        w: 1,
+        h: 1,
         content: `
           <div class="grid-stack-item-content bg-white p-4 rounded-lg shadow-md cursor-move">
             <div class="flex items-center gap-2">
@@ -81,8 +81,8 @@ export const GridExample = () => {
       grid.addWidget({
         x: newWidget.x || 0,
         y: newWidget.y || 0,
-        w: 4,
-        h: 2,
+        w: 1,
+        h: 1,
         content: widgetHtml
       });
     });

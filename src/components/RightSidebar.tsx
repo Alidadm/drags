@@ -1,3 +1,4 @@
+
 import { Terminal, Layers, Users, Activity, TrendingUp, Clock } from 'lucide-react';
 
 export const RightSidebar = () => {
@@ -23,8 +24,8 @@ export const RightSidebar = () => {
               <div
                 key={widget.id}
                 className="grid-stack-item sidebar-item"
-                data-gs-width="4"
-                data-gs-height="2"
+                data-gs-width="1"
+                data-gs-height="1"
               >
                 <div className="grid-stack-item-content bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-move">
                   <div className="widget-content flex items-center gap-2">
