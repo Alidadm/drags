@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Code, Home, FolderOpen, Settings, Menu, ChevronLeft, Layers } from 'lucide-react';
 
@@ -49,10 +48,6 @@ export const Sidebar = ({ activeSection, setActiveSection, collapsed, setCollaps
       <div className="p-6 border-b border-slate-700 flex items-center justify-between">
         {!collapsed && (
           <div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              Builder Dashboard
-            </h1>
-            <p className="text-sm text-slate-400 mt-1">Development Console</p>
           </div>
         )}
         <button

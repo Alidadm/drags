@@ -1,4 +1,3 @@
-
 import { Bell, Search, User, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,7 +15,6 @@ export const TopNavbar = () => {
       <div className="flex items-center justify-between">
         {/* Left side - Logo/Brand */}
         <div className="flex items-center space-x-4">
-          <h1 className="text-xl font-bold text-gray-900">Builder Dashboard</h1>
         </div>
 
         {/* Center - Navigation Menu */}
