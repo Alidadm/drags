@@ -27,22 +27,21 @@ export const RightSidebar = () => {
             return (
               <div
                 key={widget.id}
-                className="sidebar-item grid-stack-item cursor-grab active:cursor-grabbing"
-                data-gs-width="1"
-                data-gs-height="1"
+                className="sidebar-item cursor-grab active:cursor-grabbing"
                 draggable="true"
                 onDragStart={(e) => {
                   console.log('Starting drag for widget:', widget.title);
                   e.dataTransfer.effectAllowed = 'copy';
+                  e.dataTransfer.setData('text/plain', widget.title);
                 }}
               >
-                <div className="widget-content bg-gradient-to-r from-white to-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all hover:border-cyan-300 group select-none">
+                <div className="bg-gradient-to-r from-white to-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all hover:border-cyan-300 group select-none">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-cyan-100 rounded-lg group-hover:bg-cyan-200 transition-colors">
+                    <div className="p-2 bg-cyan-100 rounded-lg group-hover:bg-cyan-200 transition-colors widget-icon">
                       <Icon size={16} className="text-cyan-600" />
                     </div>
                     <div className="flex-1">
-                      <div className="font-medium text-gray-800 text-sm">{widget.title}</div>
+                      <div className="font-medium text-gray-800 text-sm widget-title">{widget.title}</div>
                       <div className="text-xs text-gray-500">{widget.description}</div>
                     </div>
                   </div>
