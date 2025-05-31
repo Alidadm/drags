@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Sidebar } from '../components/Sidebar';
 import { RightSidebar } from '../components/RightSidebar';
@@ -8,6 +7,7 @@ import { AnalyticsContent } from '../components/AnalyticsContent';
 import { ProjectsContent } from '../components/ProjectsContent';
 import { NewLayerContent } from '../components/NewLayerContent';
 import { SettingsContent } from '../components/SettingsContent';
+import { GridExample } from '../components/GridExample';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -16,7 +16,7 @@ const Index = () => {
   const renderContent = () => {
     switch (activeSection) {
       case 'dashboard':
-        return <DashboardContent />;
+        return <GridExample />;
       case 'analytics':
         return <AnalyticsContent />;
       case 'projects':
