@@ -93,7 +93,12 @@ export const GridExample = () => {
   }, []);
 
   return (
-    <div className="space-y-6">      
+    <div className="space-y-6">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Builder Hub Dashboard</h1>
+        <p className="text-gray-600">Drag widgets from the right sidebar to build your custom dashboard</p>
+      </div>
+      
       <div 
         ref={gridRef} 
         className="grid-stack bg-gray-50 p-6 rounded-lg min-h-[600px] border-2 border-dashed border-gray-300"
