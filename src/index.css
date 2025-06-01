@@ -99,3 +99,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+.sidebar-item.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.sidebar-item {
+  cursor: grab;
+}
