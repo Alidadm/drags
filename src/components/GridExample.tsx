@@ -1,8 +1,7 @@
 
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
-import { useLayoutEffect, useRef, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { useLayoutEffect, useRef } from 'react';
 
 export const GridExample = () => {
   const gridRef = useRef<HTMLDivElement>(null);
@@ -16,31 +15,25 @@ export const GridExample = () => {
       if (savedWidgets) {
         const widgets = JSON.parse(savedWidgets);
         widgets.forEach((widget: any) => {
-          grid.addWidget({
+          const newWidget = grid.addWidget({
             x: widget.x,
             y: widget.y,
             w: widget.w,
             h: widget.h,
             content: widget.content
           });
+          
+          // Add delete button listener for loaded widgets
+          const deleteBtn = newWidget?.querySelector('.delete-widget');
+          if (deleteBtn) {
+            deleteBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              grid.removeWidget(newWidget as HTMLElement);
+              saveWidgets();
+            });
+          }
         });
-        
-        // Add delete button listeners after widgets are loaded
-        setTimeout(() => {
-          const widgetElements = gridRef.current?.querySelectorAll('.grid-stack-item');
-          widgetElements?.forEach(widget => {
-            const deleteBtn = widget.querySelector('.delete-widget');
-            if (deleteBtn && !deleteBtn.hasAttribute('data-listener')) {
-              deleteBtn.setAttribute('data-listener', 'true');
-              deleteBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                grid.removeWidget(widget as HTMLElement);
-                saveWidgets();
-              });
-            }
-          });
-        }, 100);
       }
     } catch (error) {
       console.error('Error loading saved widgets:', error);
@@ -82,15 +75,12 @@ export const GridExample = () => {
       column: 12,
       cellHeight: 150,
       minRow: 2,
-      acceptWidgets: '.sidebar-item',
+      acceptWidgets: true,
       margin: 10,
       draggable: {
         handle: '.grid-stack-item-content',
-        scroll: false,
-        appendTo: 'body'
+        scroll: false
       },
-      dragMode: 'clone',
-      removable: true,
       resizable: {
         handles: 'all'
       }
@@ -107,25 +97,27 @@ export const GridExample = () => {
       saveWidgets();
     });
 
-    const onDragStart = (event: DragEvent) => {
-      if (!event.dataTransfer) return;
-      event.dataTransfer.setData('text/plain', '');
-      event.dataTransfer.effectAllowed = 'move';
+    // Handle drag and drop from sidebar
+    const handleDragOver = (event: DragEvent) => {
+      event.preventDefault();
+      event.dataTransfer!.dropEffect = 'move';
     };
 
-    const onDrop = (event: DragEvent) => {
-      const gridElement = event.target as HTMLElement;
-      if (!gridElement || !event.dataTransfer) return;
+    const handleDrop = (event: DragEvent) => {
+      event.preventDefault();
+      
+      const draggedElement = document.querySelector('.sidebar-item.dragging');
+      if (!draggedElement) return;
 
-      const widgetElement = document.querySelector('.sidebar-item.dragging');
-      if (!widgetElement) return;
+      const rect = gridRef.current!.getBoundingClientRect();
+      const cellWidth = rect.width / 12;
+      const cellHeight = 150 + 10; // cellHeight + margin
+      
+      const x = Math.max(0, Math.min(11, Math.floor((event.clientX - rect.left) / cellWidth)));
+      const y = Math.max(0, Math.floor((event.clientY - rect.top) / cellHeight));
 
-      const rect = gridElement.getBoundingClientRect();
-      const x = Math.floor((event.clientX - rect.left) / (rect.width / 12));
-      const y = Math.floor((event.clientY - rect.top) / 150);
-
-      const title = widgetElement.querySelector('.widget-title')?.textContent || 'Widget';
-      const iconElement = widgetElement.querySelector('.widget-icon');
+      const title = draggedElement.querySelector('.widget-title')?.textContent || 'Widget';
+      const iconElement = draggedElement.querySelector('.widget-icon');
       const icon = iconElement?.innerHTML || '';
 
       const newWidget = grid.addWidget({
@@ -151,29 +143,24 @@ export const GridExample = () => {
         `
       });
 
-      widgetElement.classList.remove('dragging');
-      event.preventDefault();
+      // Add delete button listener
+      const deleteBtn = newWidget?.querySelector('.delete-widget');
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          grid.removeWidget(newWidget as HTMLElement);
+          saveWidgets();
+        });
+      }
 
-      // Add click event listener to the delete button
-      setTimeout(() => {
-        const deleteBtn = newWidget?.querySelector('.delete-widget');
-        if (deleteBtn && !deleteBtn.hasAttribute('data-listener')) {
-          deleteBtn.setAttribute('data-listener', 'true');
-          deleteBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            grid.removeWidget(newWidget as HTMLElement);
-            saveWidgets();
-          });
-        }
-      }, 100);
-
+      draggedElement.classList.remove('dragging');
       saveWidgets();
     };
 
     const gridElement = gridRef.current;
-    gridElement.addEventListener('dragover', (e) => e.preventDefault());
-    gridElement.addEventListener('drop', onDrop);
+    gridElement.addEventListener('dragover', handleDragOver);
+    gridElement.addEventListener('drop', handleDrop);
 
     return () => {
       cleanupInProgressRef.current = true;
@@ -182,8 +169,8 @@ export const GridExample = () => {
         gridInstanceRef.current = null;
       }
       if (gridElement) {
-        gridElement.removeEventListener('dragover', (e) => e.preventDefault());
-        gridElement.removeEventListener('drop', onDrop);
+        gridElement.removeEventListener('dragover', handleDragOver);
+        gridElement.removeEventListener('drop', handleDrop);
       }
       cleanupInProgressRef.current = false;
     };
