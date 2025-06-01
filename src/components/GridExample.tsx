@@ -24,7 +24,10 @@ export const GridExample = () => {
         appendTo: 'body'
       },
       dragMode: 'clone',
-      removable: true
+      removable: true,
+      resizable: {
+        handles: 'all'
+      }
     };
 
     const grid = GridStack.init(options, gridRef.current);
