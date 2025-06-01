@@ -24,3 +24,13 @@ const getWindowFeatures = (deviceType: string): string => {
       return 'width=1200,height=800,scrollbars=yes,resizable=yes';
   }
 };
+
+export const isPreviewMode = (): boolean => {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.has('preview');
+};
+
+export const getPreviewDevice = (): string | null => {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('preview');
+};

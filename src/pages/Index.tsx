@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Sidebar } from '../components/Sidebar';
 import { RightSidebar } from '../components/RightSidebar';
@@ -8,10 +9,12 @@ import { ProjectsContent } from '../components/ProjectsContent';
 import { SettingsContent } from '../components/SettingsContent';
 import { GridExample } from '../components/GridExample';
 import { SlidePanel } from '../components/SlidePanel';
+import { isPreviewMode } from '../utils/preview';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const previewMode = isPreviewMode();
 
   const renderContent = () => {
     switch (activeSection) {
@@ -28,6 +31,18 @@ const Index = () => {
     }
   };
 
+  // Preview mode: show only the dashboard content
+  if (previewMode) {
+    return (
+      <div className="min-h-screen bg-white">
+        <div className="p-4 md:p-6 lg:p-8">
+          {renderContent()}
+        </div>
+      </div>
+    );
+  }
+
+  // Normal mode: show full layout with sidebars
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <SlidePanel />
