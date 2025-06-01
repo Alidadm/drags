@@ -7,6 +7,7 @@ import { AnalyticsContent } from '../components/AnalyticsContent';
 import { ProjectsContent } from '../components/ProjectsContent';
 import { SettingsContent } from '../components/SettingsContent';
 import { GridExample } from '../components/GridExample';
+import { SlidePanel } from '../components/SlidePanel';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -29,6 +30,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      <SlidePanel />
       <TopNavbar />
       <div className="flex flex-1">
         <Sidebar
