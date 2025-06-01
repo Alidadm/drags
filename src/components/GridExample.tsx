@@ -1,13 +1,57 @@
 
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
-import { useLayoutEffect, useRef } from 'react';
-import { X } from 'lucide-react';
+import { useLayoutEffect, useRef, useEffect } from 'react';
 
 export const GridExample = () => {
   const gridRef = useRef<HTMLDivElement>(null);
   const gridInstanceRef = useRef<GridStack | null>(null);
   const cleanupInProgressRef = useRef(false);
+
+  // Save grid state to localStorage
+  const saveGridState = (grid: GridStack) => {
+    try {
+      const serializedData = grid.save();
+      localStorage.setItem('gridstack-widgets', JSON.stringify(serializedData));
+    } catch (error) {
+      console.error('Failed to save grid state:', error);
+    }
+  };
+
+  // Load grid state from localStorage
+  const loadGridState = (grid: GridStack) => {
+    try {
+      const savedData = localStorage.getItem('gridstack-widgets');
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        grid.load(parsedData);
+        
+        // Add delete button event listeners to loaded widgets
+        setTimeout(() => {
+          addDeleteButtonListeners(grid);
+        }, 100);
+      }
+    } catch (error) {
+      console.error('Failed to load grid state:', error);
+    }
+  };
+
+  // Add delete button event listeners
+  const addDeleteButtonListeners = (grid: GridStack) => {
+    const widgets = gridRef.current?.querySelectorAll('.grid-stack-item');
+    widgets?.forEach(widget => {
+      const deleteBtn = widget.querySelector('.delete-widget');
+      if (deleteBtn && !deleteBtn.hasAttribute('data-listener')) {
+        deleteBtn.setAttribute('data-listener', 'true');
+        deleteBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          grid.removeWidget(widget as HTMLElement);
+          saveGridState(grid);
+        });
+      }
+    });
+  };
 
   useLayoutEffect(() => {
     if (!gridRef.current || cleanupInProgressRef.current) return;
@@ -34,11 +78,13 @@ export const GridExample = () => {
     const grid = GridStack.init(options, gridRef.current);
     gridInstanceRef.current = grid;
 
-    const onDragStart = (event: DragEvent) => {
-      if (!event.dataTransfer) return;
-      event.dataTransfer.setData('text/plain', '');
-      event.dataTransfer.effectAllowed = 'move';
-    };
+    // Load saved widgets
+    loadGridState(grid);
+
+    // Save grid state when widgets are moved or resized
+    grid.on('change', () => {
+      saveGridState(grid);
+    });
 
     const onDrop = (event: DragEvent) => {
       const gridElement = event.target as HTMLElement;
@@ -55,7 +101,7 @@ export const GridExample = () => {
       const iconElement = widgetElement.querySelector('.widget-icon');
       const icon = iconElement?.innerHTML || '';
 
-      grid.addWidget({
+      const newWidget = grid.addWidget({
         x,
         y,
         w: 3,
@@ -81,19 +127,11 @@ export const GridExample = () => {
       widgetElement.classList.remove('dragging');
       event.preventDefault();
 
-      // Add click event listener to the delete button
-      const widgets = gridRef.current?.querySelectorAll('.grid-stack-item');
-      widgets?.forEach(widget => {
-        const deleteBtn = widget.querySelector('.delete-widget');
-        if (deleteBtn && !deleteBtn.hasAttribute('data-listener')) {
-          deleteBtn.setAttribute('data-listener', 'true');
-          deleteBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            grid.removeWidget(widget as HTMLElement);
-          });
-        }
-      });
+      // Add delete button listener and save state
+      setTimeout(() => {
+        addDeleteButtonListeners(grid);
+        saveGridState(grid);
+      }, 100);
     };
 
     const gridElement = gridRef.current;
