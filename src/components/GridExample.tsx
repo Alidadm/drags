@@ -1,3 +1,4 @@
+
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
 import { useLayoutEffect, useRef } from 'react';
@@ -89,7 +90,7 @@ export const GridExample = () => {
           deleteBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            grid.removeWidget(widget);
+            grid.removeWidget(widget as HTMLElement);
           });
         }
       });
