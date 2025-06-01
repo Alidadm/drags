@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Settings, Palette, Download, Monitor, Smartphone, Tablet } from 'lucide-react';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { openPreview } from '@/utils/preview';
 
 export const SlidePanel = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -18,6 +19,13 @@ export const SlidePanel = () => {
     document.addEventListener('mousemove', handleMouseMove);
     return () => document.removeEventListener('mousemove', handleMouseMove);
   }, [isVisible]);
+
+  const handleDeviceChange = (value: string) => {
+    if (value) {
+      setSelectedDevice(value);
+      openPreview(value);
+    }
+  };
 
   return (
     <div
@@ -42,7 +50,7 @@ export const SlidePanel = () => {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-gray-700">Preview:</span>
-              <ToggleGroup type="single" value={selectedDevice} onValueChange={setSelectedDevice} className="border rounded-md">
+              <ToggleGroup type="single" value={selectedDevice} onValueChange={handleDeviceChange} className="border rounded-md">
                 <ToggleGroupItem value="pc" aria-label="PC Preview" className="px-3 py-2">
                   <Monitor className="w-4 h-4" />
                   <span className="ml-2 hidden sm:inline">PC</span>
