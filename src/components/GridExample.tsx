@@ -1,13 +1,78 @@
 
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
-import { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useRef, useEffect } from 'react';
 import { X } from 'lucide-react';
 
 export const GridExample = () => {
   const gridRef = useRef<HTMLDivElement>(null);
   const gridInstanceRef = useRef<GridStack | null>(null);
   const cleanupInProgressRef = useRef(false);
+
+  // Load saved widgets from localStorage
+  const loadSavedWidgets = (grid: GridStack) => {
+    try {
+      const savedWidgets = localStorage.getItem('dashboard-widgets');
+      if (savedWidgets) {
+        const widgets = JSON.parse(savedWidgets);
+        widgets.forEach((widget: any) => {
+          grid.addWidget({
+            x: widget.x,
+            y: widget.y,
+            w: widget.w,
+            h: widget.h,
+            content: widget.content
+          });
+        });
+        
+        // Add delete button listeners after widgets are loaded
+        setTimeout(() => {
+          const widgetElements = gridRef.current?.querySelectorAll('.grid-stack-item');
+          widgetElements?.forEach(widget => {
+            const deleteBtn = widget.querySelector('.delete-widget');
+            if (deleteBtn && !deleteBtn.hasAttribute('data-listener')) {
+              deleteBtn.setAttribute('data-listener', 'true');
+              deleteBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                grid.removeWidget(widget as HTMLElement);
+                saveWidgets();
+              });
+            }
+          });
+        }, 100);
+      }
+    } catch (error) {
+      console.error('Error loading saved widgets:', error);
+    }
+  };
+
+  // Save current widgets to localStorage
+  const saveWidgets = () => {
+    if (!gridInstanceRef.current) return;
+    
+    try {
+      const widgets: any[] = [];
+      const gridItems = gridRef.current?.querySelectorAll('.grid-stack-item');
+      
+      gridItems?.forEach(item => {
+        const node = (item as any).gridstackNode;
+        if (node) {
+          widgets.push({
+            x: node.x,
+            y: node.y,
+            w: node.w,
+            h: node.h,
+            content: item.innerHTML
+          });
+        }
+      });
+      
+      localStorage.setItem('dashboard-widgets', JSON.stringify(widgets));
+    } catch (error) {
+      console.error('Error saving widgets:', error);
+    }
+  };
 
   useLayoutEffect(() => {
     if (!gridRef.current || cleanupInProgressRef.current) return;
@@ -34,6 +99,14 @@ export const GridExample = () => {
     const grid = GridStack.init(options, gridRef.current);
     gridInstanceRef.current = grid;
 
+    // Load saved widgets
+    loadSavedWidgets(grid);
+
+    // Listen for widget changes to save state
+    grid.on('added removed change', () => {
+      saveWidgets();
+    });
+
     const onDragStart = (event: DragEvent) => {
       if (!event.dataTransfer) return;
       event.dataTransfer.setData('text/plain', '');
@@ -55,7 +128,7 @@ export const GridExample = () => {
       const iconElement = widgetElement.querySelector('.widget-icon');
       const icon = iconElement?.innerHTML || '';
 
-      grid.addWidget({
+      const newWidget = grid.addWidget({
         x,
         y,
         w: 3,
@@ -82,18 +155,20 @@ export const GridExample = () => {
       event.preventDefault();
 
       // Add click event listener to the delete button
-      const widgets = gridRef.current?.querySelectorAll('.grid-stack-item');
-      widgets?.forEach(widget => {
-        const deleteBtn = widget.querySelector('.delete-widget');
+      setTimeout(() => {
+        const deleteBtn = newWidget?.querySelector('.delete-widget');
         if (deleteBtn && !deleteBtn.hasAttribute('data-listener')) {
           deleteBtn.setAttribute('data-listener', 'true');
           deleteBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            grid.removeWidget(widget as HTMLElement);
+            grid.removeWidget(newWidget as HTMLElement);
+            saveWidgets();
           });
         }
-      });
+      }, 100);
+
+      saveWidgets();
     };
 
     const gridElement = gridRef.current;
