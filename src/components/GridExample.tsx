@@ -1,6 +1,7 @@
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
 import { useLayoutEffect, useRef } from 'react';
+import { X } from 'lucide-react';
 
 export const GridExample = () => {
   const gridRef = useRef<HTMLDivElement>(null);
@@ -56,7 +57,10 @@ export const GridExample = () => {
         w: 3,
         h: 2,
         content: `
-          <div class="grid-stack-item-content bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-all h-full flex flex-col">
+          <div class="grid-stack-item-content bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-all h-full flex flex-col relative">
+            <button class="delete-widget absolute top-2 right-2 p-1.5 rounded-md hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
             <div class="flex items-center gap-2 mb-2">
               <div class="p-1.5 bg-cyan-100 rounded-md">
                 ${icon}
@@ -72,6 +76,20 @@ export const GridExample = () => {
 
       widgetElement.classList.remove('dragging');
       event.preventDefault();
+
+      // Add click event listener to the delete button
+      const widgets = gridRef.current?.querySelectorAll('.grid-stack-item');
+      widgets?.forEach(widget => {
+        const deleteBtn = widget.querySelector('.delete-widget');
+        if (deleteBtn && !deleteBtn.hasAttribute('data-listener')) {
+          deleteBtn.setAttribute('data-listener', 'true');
+          deleteBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            grid.removeWidget(widget);
+          });
+        }
+      });
     };
 
     const gridElement = gridRef.current;
