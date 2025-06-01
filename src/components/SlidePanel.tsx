@@ -1,9 +1,12 @@
+
 import { useState, useEffect } from 'react';
-import { Settings, Palette, Download } from 'lucide-react';
+import { Settings, Palette, Download, Monitor, Smartphone, Tablet } from 'lucide-react';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 export const SlidePanel = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [mousePosition, setMousePosition] = useState(0);
+  const [selectedDevice, setSelectedDevice] = useState('pc');
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -34,10 +37,32 @@ export const SlidePanel = () => {
               Theme
             </button>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
-            <Download className="w-4 h-4" />
-            Export
-          </button>
+          
+          {/* Device Preview Toggle */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-gray-700">Preview:</span>
+              <ToggleGroup type="single" value={selectedDevice} onValueChange={setSelectedDevice} className="border rounded-md">
+                <ToggleGroupItem value="pc" aria-label="PC Preview" className="px-3 py-2">
+                  <Monitor className="w-4 h-4" />
+                  <span className="ml-2 hidden sm:inline">PC</span>
+                </ToggleGroupItem>
+                <ToggleGroupItem value="tablet" aria-label="Tablet Preview" className="px-3 py-2">
+                  <Tablet className="w-4 h-4" />
+                  <span className="ml-2 hidden sm:inline">Tablet</span>
+                </ToggleGroupItem>
+                <ToggleGroupItem value="mobile" aria-label="Mobile Preview" className="px-3 py-2">
+                  <Smartphone className="w-4 h-4" />
+                  <span className="ml-2 hidden sm:inline">Mobile</span>
+                </ToggleGroupItem>
+              </ToggleGroup>
+            </div>
+            
+            <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+              <Download className="w-4 h-4" />
+              Export
+            </button>
+          </div>
         </div>
       </div>
     </div>
