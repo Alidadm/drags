@@ -1,3 +1,4 @@
+
 export const openPreview = (deviceType: string) => {
   const baseUrl = window.location.origin;
   const currentParams = new URLSearchParams(window.location.search);

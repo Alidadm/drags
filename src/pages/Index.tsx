@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Sidebar } from '../components/Sidebar';
 import { RightSidebar } from '../components/RightSidebar';
@@ -18,7 +19,7 @@ const Index = () => {
   const renderContent = () => {
     switch (activeSection) {
       case 'dashboard':
-        return <DashboardContent />;
+        return <GridExample />;
       case 'analytics':
         return <AnalyticsContent />;
       case 'projects':
@@ -26,16 +27,16 @@ const Index = () => {
       case 'settings':
         return <SettingsContent />;
       default:
-        return <DashboardContent />;
+        return <GridExample />;
     }
   };
 
   // Preview mode: show only the dashboard content
   if (previewMode) {
     return (
-      <div className="min-h-screen bg-slate-800">
+      <div className="min-h-screen bg-white">
         <div className="p-4 md:p-6 lg:p-8">
-          <DashboardContent />
+          {renderContent()}
         </div>
       </div>
     );
