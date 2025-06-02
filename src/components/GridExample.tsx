@@ -34,6 +34,26 @@ export const GridExample = () => {
     const grid = GridStack.init(options, gridRef.current);
     gridInstanceRef.current = grid;
 
+    // Load saved widgets from localStorage
+    const savedWidgets = localStorage.getItem('gridstack-widgets');
+    if (savedWidgets) {
+      const widgets = JSON.parse(savedWidgets);
+      grid.load(widgets);
+    }
+
+    // Save widgets on change
+    grid.on('change', () => {
+      const widgets = grid.save();
+      localStorage.setItem('gridstack-widgets', JSON.stringify(widgets));
+    });
+
+    // Save widgets before unload
+    const saveBeforeUnload = () => {
+      const widgets = grid.save();
+      localStorage.setItem('gridstack-widgets', JSON.stringify(widgets));
+    };
+    window.addEventListener('beforeunload', saveBeforeUnload);
+
     const onDragStart = (event: DragEvent) => {
       if (!event.dataTransfer) return;
       event.dataTransfer.setData('text/plain', '');
@@ -103,9 +123,11 @@ export const GridExample = () => {
     return () => {
       cleanupInProgressRef.current = true;
       if (gridInstanceRef.current) {
+        saveBeforeUnload(); // Save before destroying
         gridInstanceRef.current.destroy();
         gridInstanceRef.current = null;
       }
+      window.removeEventListener('beforeunload', saveBeforeUnload);
       if (gridElement) {
         gridElement.removeEventListener('dragover', (e) => e.preventDefault());
         gridElement.removeEventListener('drop', onDrop);

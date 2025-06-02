@@ -16,6 +16,17 @@ const Index = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const previewMode = isPreviewMode();
 
+  // Preview mode: show only the dashboard content
+  if (previewMode) {
+    return (
+      <div className="min-h-screen bg-white">
+        <div className="p-4 md:p-6 lg:p-8">
+          <GridExample />
+        </div>
+      </div>
+    );
+  }
+
   const renderContent = () => {
     switch (activeSection) {
       case 'dashboard':
@@ -30,17 +41,6 @@ const Index = () => {
         return <GridExample />;
     }
   };
-
-  // Preview mode: show only the dashboard content
-  if (previewMode) {
-    return (
-      <div className="min-h-screen bg-white">
-        <div className="p-4 md:p-6 lg:p-8">
-          {renderContent()}
-        </div>
-      </div>
-    );
-  }
 
   // Normal mode: show full layout with sidebars
   return (
