@@ -1,4 +1,3 @@
-
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
 import { useLayoutEffect, useRef } from 'react';
@@ -39,18 +38,31 @@ export const GridExample = () => {
     if (savedWidgets) {
       const widgets = JSON.parse(savedWidgets);
       grid.load(widgets);
+
+      // Add click event listeners to delete buttons for loaded widgets
+      const existingWidgets = gridRef.current?.querySelectorAll('.grid-stack-item');
+      existingWidgets?.forEach(widget => {
+        const deleteBtn = widget.querySelector('.delete-widget');
+        if (deleteBtn && !deleteBtn.hasAttribute('data-listener')) {
+          deleteBtn.setAttribute('data-listener', 'true');
+          deleteBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            grid.removeWidget(widget as HTMLElement);
+            saveWidgets(grid);
+          });
+        }
+      });
     }
 
     // Save widgets on change
     grid.on('change', () => {
-      const widgets = grid.save();
-      localStorage.setItem('gridstack-widgets', JSON.stringify(widgets));
+      saveWidgets(grid);
     });
 
     // Save widgets before unload
     const saveBeforeUnload = () => {
-      const widgets = grid.save();
-      localStorage.setItem('gridstack-widgets', JSON.stringify(widgets));
+      saveWidgets(grid);
     };
     window.addEventListener('beforeunload', saveBeforeUnload);
 
@@ -59,6 +71,12 @@ export const GridExample = () => {
       event.dataTransfer.setData('text/plain', '');
       event.dataTransfer.effectAllowed = 'move';
     };
+
+    // Helper function to save widgets
+    function saveWidgets(grid: GridStack) {
+      const widgets = grid.save();
+      localStorage.setItem('gridstack-widgets', JSON.stringify(widgets));
+    }
 
     const onDrop = (event: DragEvent) => {
       const gridElement = event.target as HTMLElement;
@@ -75,7 +93,7 @@ export const GridExample = () => {
       const iconElement = widgetElement.querySelector('.widget-icon');
       const icon = iconElement?.innerHTML || '';
 
-      grid.addWidget({
+      const widget = grid.addWidget({
         x,
         y,
         w: 3,
@@ -98,22 +116,22 @@ export const GridExample = () => {
         `
       });
 
-      widgetElement.classList.remove('dragging');
-      event.preventDefault();
-
-      // Add click event listener to the delete button
-      const widgets = gridRef.current?.querySelectorAll('.grid-stack-item');
-      widgets?.forEach(widget => {
+      // Add click event listener to the delete button for the new widget
+      if (widget) {
         const deleteBtn = widget.querySelector('.delete-widget');
         if (deleteBtn && !deleteBtn.hasAttribute('data-listener')) {
           deleteBtn.setAttribute('data-listener', 'true');
           deleteBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            grid.removeWidget(widget as HTMLElement);
+            grid.removeWidget(widget);
+            saveWidgets(grid);
           });
         }
-      });
+      }
+
+      widgetElement.classList.remove('dragging');
+      event.preventDefault();
     };
 
     const gridElement = gridRef.current;
@@ -123,7 +141,7 @@ export const GridExample = () => {
     return () => {
       cleanupInProgressRef.current = true;
       if (gridInstanceRef.current) {
-        saveBeforeUnload(); // Save before destroying
+        saveBeforeUnload();
         gridInstanceRef.current.destroy();
         gridInstanceRef.current = null;
       }
