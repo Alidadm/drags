@@ -49,7 +49,8 @@ export const GridExample = () => {
             e.preventDefault();
             e.stopPropagation();
             grid.removeWidget(widget as HTMLElement);
-            saveWidgets(grid);
+            const updatedWidgets = grid.save();
+            localStorage.setItem('gridstack-widgets', JSON.stringify(updatedWidgets));
           });
         }
       });
@@ -57,12 +58,14 @@ export const GridExample = () => {
 
     // Save widgets on change
     grid.on('change', () => {
-      saveWidgets(grid);
+      const widgets = grid.save();
+      localStorage.setItem('gridstack-widgets', JSON.stringify(widgets));
     });
 
     // Save widgets before unload
     const saveBeforeUnload = () => {
-      saveWidgets(grid);
+      const widgets = grid.save();
+      localStorage.setItem('gridstack-widgets', JSON.stringify(widgets));
     };
     window.addEventListener('beforeunload', saveBeforeUnload);
 
@@ -71,12 +74,6 @@ export const GridExample = () => {
       event.dataTransfer.setData('text/plain', '');
       event.dataTransfer.effectAllowed = 'move';
     };
-
-    // Helper function to save widgets
-    function saveWidgets(grid: GridStack) {
-      const widgets = grid.save();
-      localStorage.setItem('gridstack-widgets', JSON.stringify(widgets));
-    }
 
     const onDrop = (event: DragEvent) => {
       const gridElement = event.target as HTMLElement;
@@ -125,7 +122,8 @@ export const GridExample = () => {
             e.preventDefault();
             e.stopPropagation();
             grid.removeWidget(widget);
-            saveWidgets(grid);
+            const updatedWidgets = grid.save();
+            localStorage.setItem('gridstack-widgets', JSON.stringify(updatedWidgets));
           });
         }
       }
